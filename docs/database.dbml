@@ -1,0 +1,141 @@
+Table Departments {
+  DeptID integer [pk, increment]
+  DeptName varchar [not null, unique]
+  DeptCode varchar [not null, unique]
+  Faculty varchar [not null]
+  HeadProfID integer [ref: > Professors.ProfID]
+  CreatedAt datetime [not null]
+}
+
+Table Professors {
+  ProfID integer [pk, increment]
+  FirstName varchar [not null]
+  LastName varchar [not null]
+  Email varchar [not null, unique]
+  Phone varchar
+  Office varchar
+  Title varchar [not null, default: 'Prof. Dr.']
+  HireDate date [not null]
+  DeptID integer [not null, ref: > Departments.DeptID]
+}
+
+Table Students {
+  StudentID integer [pk, increment]
+  FirstName varchar [not null]
+  LastName varchar [not null]
+  Email varchar [not null, unique]
+  MatriculationNr varchar [not null, unique]
+  MatriculationDate date [not null]
+  DateOfBirth date
+  DeptID integer [not null, ref: > Departments.DeptID]
+  Status varchar [not null, default: 'active']
+
+  Indexes {
+    (Status, DeptID) [name: 'idx_active_students']
+  }
+}
+
+Table StudentPhones {
+  StudentID integer [not null, ref: > Students.StudentID]
+  Phone varchar [not null]
+  PhoneType varchar [not null, default: 'mobile']
+
+  Indexes {
+    (StudentID, Phone) [pk]
+  }
+}
+
+Table Rooms {
+  RoomID integer [pk, increment]
+  RoomNumber varchar [not null]
+  Building varchar [not null]
+  Capacity integer [not null]
+  RoomType varchar [not null, default: 'lecture_hall']
+
+  Indexes {
+    (RoomNumber, Building) [unique]
+  }
+}
+
+Table Courses {
+  CourseID varchar [pk]
+  CourseName varchar [not null]
+  Credits integer [not null]
+  Description text
+  DeptID integer [not null, ref: > Departments.DeptID]
+  CourseLevel varchar [not null, default: 'bachelor']
+}
+
+Table Prerequisites {
+  CourseID varchar [not null, ref: > Courses.CourseID]
+  PrereqCourseID varchar [not null, ref: > Courses.CourseID]
+
+  Indexes {
+    (CourseID, PrereqCourseID) [pk]
+  }
+}
+
+Table Semesters {
+  SemesterID varchar [pk]
+  SemesterName varchar [not null]
+  StartDate date [not null]
+  EndDate date [not null]
+}
+
+Table CourseOfferings {
+  OfferingID integer [pk, increment]
+  CourseID varchar [not null, ref: > Courses.CourseID]
+  SemesterID varchar [not null, ref: > Semesters.SemesterID]
+  ProfID integer [not null, ref: > Professors.ProfID]
+  RoomID integer [not null, ref: > Rooms.RoomID]
+  DayOfWeek varchar [not null]
+  StartTime time [not null]
+  EndTime time [not null]
+  MaxStudents integer [not null, default: 100]
+
+  Indexes {
+    (CourseID, SemesterID) [unique]
+    (ProfID, SemesterID, DayOfWeek, StartTime) [unique, name: 'no_prof_double_booking']
+    (RoomID, SemesterID, DayOfWeek, StartTime) [unique, name: 'no_room_double_booking']
+  }
+}
+
+Table Enrollments {
+  EnrollmentID integer [pk, increment]
+  StudentID integer [not null, ref: > Students.StudentID]
+  OfferingID integer [not null, ref: > CourseOfferings.OfferingID]
+  EnrollDate date [not null]
+  Grade decimal
+  GradeDate date
+  Status varchar [not null, default: 'enrolled']
+
+  Indexes {
+    (StudentID, OfferingID) [unique]
+    (Status, Grade)
+  }
+}
+
+Table ExamResults {
+  ExamResultID integer [pk, increment]
+  EnrollmentID integer [not null, ref: > Enrollments.EnrollmentID]
+  AttemptNumber integer [not null, default: 1]
+  ExamDate date [not null]
+  ExamType varchar [not null]
+  Score decimal
+  Grade decimal
+  Passed integer
+
+  Indexes {
+    (EnrollmentID, AttemptNumber) [unique]
+  }
+}
+
+Table AuditLog {
+  AuditID integer [pk, increment]
+  TableName varchar [not null]
+  Operation varchar [not null]
+  RecordID integer [not null]
+  ChangedAt datetime [not null]
+  OldValues text
+  NewValues text
+}

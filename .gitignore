@@ -1,0 +1,6 @@
+node_modules/
+dist/
+university.db
+.DS_Store
+.claude/
+bun.lock

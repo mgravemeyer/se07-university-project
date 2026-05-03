@@ -1,0 +1,26 @@
+{
+  "name": "relational-databases-example",
+  "version": "1.0.0",
+  "description": "University Management System - Relational Database Module Example",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "db:init": "tsx src/db/init.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:reset": "tsx src/db/reset.ts"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.1",
+    "better-sqlite3": "^11.7.0",
+    "hono": "^4.12.16",
+    "zod": "^4.4.2"
+  }
+}
