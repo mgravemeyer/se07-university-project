@@ -125,3 +125,9 @@ src/
 - Hono (web framework)
 - better-sqlite3 (database driver)
 - Zod (input validation)
+
+## AI usage
+
+I used Claude as a tool during development, mainly for generating some of the
+repetitive endpoint code and as a sounding board for ideas and design decisions.
+The schema design, SQL, and overall architecture are my own work that was supported by AI.
